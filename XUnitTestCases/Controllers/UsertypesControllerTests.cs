@@ -51,9 +51,12 @@ namespace XUnitTestCases.Controllers
         }
 
         [Fact]
-        public void AddUserType_ShouldReturnNull_WhenUsertypeIsNull()
+        public void AddUserType_ShouldReturnStatusCode500_WhenUsertypeIsNull()
         {
+            //Arrange
             Usertype usertype = null;
+            var ReturnData = (Usertype)null;
+            UserInterface.Setup(s => s.AddUserType(usertype)).ReturnsAsync(ReturnData);
 
             //Act
             var Response = UserController.AddUserType(usertype);
@@ -106,7 +109,7 @@ namespace XUnitTestCases.Controllers
         }
 
         [Fact]
-        public void GetAllUserType_ShouldReturnNull_WhenUsertypesAreNull()
+        public void GetAllUserType_ShouldReturnNotFound_WhenUsertypesAreNull()
         {
             //Arrange
             IEnumerable<Usertype> Usertypes = null;

@@ -49,19 +49,21 @@ namespace XUnitTestCases.Controllers
         [Fact]
         public void AddAppuser_ShouldReturnStatusCode500_WhenAppUserIsNull()
         {
+            //Arrange
             Appuser AppUser = null;
-
+            var ReturnData = (Appuser)null;
+            AppInterface.Setup(s => s.AddAppuser(AppUser)).ReturnsAsync(ReturnData);
             //Act
             var Response = AppController.AddAppuser(AppUser);
 
             //Assert
-            Response.Should().NotBeNull();
-            Response.Should().BeAssignableTo<Task<IActionResult>>();
-            var objectResult = Response.Result as ObjectResult;
-            objectResult.StatusCode.Should().Be(500);
-            objectResult.Value.Should().Be("Failed to Add AppUser");
-            AppInterface.Verify(s => s.AddAppuser(It.IsAny<Appuser>()), Times.Once());
-
+             Response.Should().NotBeNull();
+             Response.Should().BeAssignableTo<Task<IActionResult>>();
+             var objectResult = Response.Result as ObjectResult;
+             objectResult.StatusCode.Should().Be(500);
+             objectResult.Value.Should().Be("Failed to Add AppUser");
+             AppInterface.Verify(s => s.AddAppuser(It.IsAny<Appuser>()), Times.Once());
+         
         }
 
         [Fact]
@@ -103,7 +105,7 @@ namespace XUnitTestCases.Controllers
         }
 
         [Fact]
-        public void GetAllAppuserByUserType_ShouldReturnStatusCode404_WhenUsertypesAreNull()
+        public void GetAllAppuserByUserType_ShouldReturnStatusCode500_WhenUsertypesAreNull()
         {
             //Arrange
             string Usertypes = null;
@@ -120,6 +122,27 @@ namespace XUnitTestCases.Controllers
             objectResult.StatusCode.Should().Be(500);
             objectResult.Value.Should().Be("userType cannot be null");
             AppInterface.Verify(s => s.GetAllAppuserByUserType(Usertypes), Times.Never());
+
+        }
+
+        [Fact]
+        public void GetAllAppuserByUserType_ShouldReturnStatusCode404_WhenAppuserIsNull()
+        {
+            //Arrange
+            string Usertypes = "Admin";
+            IEnumerable<Appuser> ReturnData = null;
+            AppInterface.Setup(s => s.GetAllAppuserByUserType(Usertypes)).ReturnsAsync(ReturnData);
+
+            //Act
+            var Response = AppController.GetAllAppuserByUserType(Usertypes);
+
+            //Assert
+            Response.Should().NotBeNull();
+            Response.Should().BeAssignableTo<Task<IActionResult>>();
+            var objectResult = Response.Result as ObjectResult;
+            objectResult.StatusCode.Should().Be(404);
+            objectResult.Value.Should().Be("Appuser Not Found");
+            AppInterface.Verify(s => s.GetAllAppuserByUserType(Usertypes), Times.Once());
 
         }
 
